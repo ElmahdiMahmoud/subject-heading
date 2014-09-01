@@ -1,0 +1,67 @@
+!!!5
+html
+    head
+        title Subject-heading
+        link(rel='stylesheet', href='/css/style.css')
+        script(type="text/javascript", src="/js/vendor/jquery-1.10.2.js")
+        script(type="text/javascript", src="/js/vendor/underscore-1.5.2.js")
+        script(type="text/javascript", src="/js/front.js")
+    body
+        h3 Subject-heading
+        hr
+        form(class="sort", method="GET", action="/")
+            strong Sort:
+            span Alphabet:
+            input(type="radio", id="sort_alphabet_asc", name="sort", value="alphabet/asc", 
+                checked=(filter.sort === 'alphabet/asc')
+            )
+            label(for="sort_alphabet_asc") Asc
+            input(type="radio", id="sort_alphabet_desc", name="sort", value="alphabet/desc", 
+                checked=(filter.sort === 'alphabet/desc')
+            )
+            label(for="sort_alphabet_desc") Desc
+            i(class="sep")
+            span By page number:
+            input(type="radio",id="sort_page_asc", name="sort", value="page/asc"
+                checked=(filter.sort === 'page/asc')
+            )
+            label(for="sort_page_asc") Asc
+            input(type="radio", id="sort_page_desc", name="sort", value="page/desc"
+                checked=(filter.sort === 'page/desc')
+            )
+            label(for="sort_page_desc") Desc
+            i(class="sep")
+            span Display:
+            input(type="radio", id="display_nested", name="display", value="nested"
+                checked=(filter.display === 'nested')
+            )
+            label(for="display_nested") Nested
+            input(type="radio", id="display_plain", name="display", value="plain"
+                checked=(filter.display === 'plain')
+            )
+            label(for="display_plain") Plain
+            i(class="sep")
+            label(for="search") Search:
+            input(type="text", id="search", name="search", value="#{filter.search || ''}")
+            input(type="submit", value="Filter")
+            a(href="/") Clear
+            script(type="text/javascript")
+                var search = '#{filter.search}';
+        hr
+        if Object.keys(terms).length
+            mixin deep(nodes)
+                ul
+                    if Object.keys(nodes).length
+                        - each node in nodes
+                            li(data-id="#{node._id}")
+                                label= node.cased || node.name 
+                                i= node.pages.join(',')
+                                span
+                                    button(class="edit") Edit
+                                    button(class="delete") Delete
+                                    button(class="add_sub") Add subterm
+                                mixin deep(node.children || {})
+            mixin deep(terms)
+        else
+            | No terms
+        button(class="add_root") Add root term
